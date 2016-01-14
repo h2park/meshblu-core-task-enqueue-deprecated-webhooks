@@ -1,6 +1,6 @@
 _ = require 'lodash'
 async = require 'async'
-uuid = require 'uuid'
+UUID = require 'uuid'
 DeviceManager = require 'meshblu-core-manager-device'
 http = require 'http'
 
@@ -25,16 +25,17 @@ class EnqueueWebhooks
       return callback error if error?
       return @_doCallback request, 204, callback
 
-  _createJob: ({auth, toUuid, fromUuid, messageType, message, options}, callback) =>
+  _createJob: ({auth, uuid, toUuid, fromUuid, messageType, message, options}, callback) =>
     job =
       metadata: {
         auth
+        uuid
         toUuid
         fromUuid
         messageType
         message
         options
-        responseId: uuid.v4()
+        responseId: UUID.v4()
         jobType: 'DeliverWebhook'
       }
       data: message
