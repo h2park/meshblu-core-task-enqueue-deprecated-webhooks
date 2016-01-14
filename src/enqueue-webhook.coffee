@@ -52,7 +52,7 @@ class EnqueueWebhooks
       return callback null unless forwarders?
 
       async.eachSeries forwarders, (options, next) =>
-        @_createJob {auth, toUuid, fromUuid, messageType, message, options}, next
+        @_createJob {auth, uuid: lookupUuid, toUuid, fromUuid, messageType, message, options}, next
       , callback
 
 module.exports = EnqueueWebhooks
