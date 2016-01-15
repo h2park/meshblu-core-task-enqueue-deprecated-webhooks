@@ -46,7 +46,7 @@ class EnqueueWebhooks
   _send: ({auth, toUuid, fromUuid, messageType, message}, callback) =>
     return callback null unless _.contains ['sent', 'broadcast'], messageType
 
-    lookupUuid = fromUuid
+    lookupUuid = toUuid
 
     @deviceManager.findOne {uuid:lookupUuid}, (error, device) =>
       return callback error if error?

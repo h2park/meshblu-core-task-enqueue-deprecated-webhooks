@@ -42,7 +42,7 @@ describe 'EnqueueWebhooks', ->
       context 'when given a device', ->
         beforeEach (done) ->
           record =
-            uuid: 'someone-uuid'
+            uuid: 'emitter-uuid'
             meshblu:
               messageHooks: [
                   type: 'webhook'
@@ -81,7 +81,7 @@ describe 'EnqueueWebhooks', ->
               done error
 
           it 'should create a job', ->
-            expect(@request.metadata.auth).to.deep.equal uuid: 'someone-uuid', token: 'abc123'
+            expect(@request.metadata.auth).to.deep.equal uuid: 'emitter-uuid', token: 'abc123'
             expect(@request.metadata.jobType).to.equal 'DeliverWebhook'
             expect(@request.metadata.toUuid).to.equal 'emitter-uuid'
             expect(@request.metadata.messageType).to.equal 'broadcast'
@@ -96,7 +96,7 @@ describe 'EnqueueWebhooks', ->
       context 'when given a device', ->
         beforeEach (done) ->
           record =
-            uuid: 'someone-uuid'
+            uuid: 'emitter-uuid'
             meshblu:
               messageHooks: [
                 type: 'webhook'
@@ -135,7 +135,7 @@ describe 'EnqueueWebhooks', ->
               done error
 
           it 'should create a job', ->
-            expect(@request.metadata.auth).to.deep.equal uuid: 'someone-uuid', token: 'abc123'
+            expect(@request.metadata.auth).to.deep.equal uuid: 'emitter-uuid', token: 'abc123'
             expect(@request.metadata.jobType).to.equal 'DeliverWebhook'
             expect(@request.metadata.toUuid).to.equal 'emitter-uuid'
             expect(@request.metadata.messageType).to.equal 'sent'
@@ -149,7 +149,7 @@ describe 'EnqueueWebhooks', ->
       context 'when given a device with two webhooks of the same type', ->
         beforeEach (done) ->
           record =
-            uuid: 'someone-uuid'
+            uuid: 'emitter-uuid'
             meshblu:
               messageHooks: [
                 type: 'webhook'
@@ -192,7 +192,7 @@ describe 'EnqueueWebhooks', ->
               done error
 
           it 'should create a job', ->
-            expect(@request.metadata.auth).to.deep.equal uuid: 'someone-uuid', token: 'abc123'
+            expect(@request.metadata.auth).to.deep.equal uuid: 'emitter-uuid', token: 'abc123'
             expect(@request.metadata.jobType).to.equal 'DeliverWebhook'
             expect(@request.metadata.toUuid).to.equal 'emitter-uuid'
             expect(@request.metadata.messageType).to.equal 'sent'
@@ -209,7 +209,7 @@ describe 'EnqueueWebhooks', ->
                 done error
 
             it 'should create another job', ->
-              expect(@request.metadata.auth).to.deep.equal uuid: 'someone-uuid', token: 'abc123'
+              expect(@request.metadata.auth).to.deep.equal uuid: 'emitter-uuid', token: 'abc123'
               expect(@request.metadata.jobType).to.equal 'DeliverWebhook'
               expect(@request.metadata.toUuid).to.equal 'emitter-uuid'
               expect(@request.metadata.messageType).to.equal 'sent'
