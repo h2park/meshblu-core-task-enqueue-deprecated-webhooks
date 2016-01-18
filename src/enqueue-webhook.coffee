@@ -44,7 +44,7 @@ class EnqueueWebhooks
     @jobManager.createRequest 'request', job, callback
 
   _send: ({auth, toUuid, fromUuid, messageType, message}, callback) =>
-    return callback null unless messageType == 'received'
+    return callback null unless _.contains ['received', 'broadcast'], messageType
 
     lookupUuid = toUuid
 
