@@ -1,15 +1,13 @@
 _ = require 'lodash'
 async = require 'async'
 UUID = require 'uuid'
-TokenManager = require 'meshblu-core-manager-token'
 DeviceManager = require 'meshblu-core-manager-device'
 http = require 'http'
 
 class EnqueueWebhooks
   constructor: (options={},dependencies={}) ->
-    {@datastore,@jobManager, uuidAliasResolver,cache,pepper,@tokenManager} = options
+    {@datastore,@jobManager, uuidAliasResolver,cache,pepper} = options
     @deviceManager = new DeviceManager {@datastore, uuidAliasResolver}
-    @tokenManager ?= new TokenManager {cache, uuidAliasResolver, pepper}
 
   _doCallback: (request, code, callback) =>
     response =
@@ -55,12 +53,8 @@ class EnqueueWebhooks
       return callback null unless forwarders?
 
       async.eachSeries forwarders, (options, next) =>
-        @tokenManager.generateAndStoreTokenInCache lookupUuid, (error, token) =>
-          auth =
-            uuid: lookupUuid
-            token: token
-
-          @_createJob {auth, uuid: lookupUuid, toUuid, fromUuid, messageType, message, options}, next
+        auth.uuid = lookupUuid
+        @_createJob {auth, uuid: lookupUuid, toUuid, fromUuid, messageType, message, options}, next
       , callback
 
 module.exports = EnqueueWebhooks
