@@ -8,11 +8,12 @@ EnqueueWebhooks = require '../'
 
 describe 'EnqueueWebhooks', ->
   beforeEach (done) ->
+    database = mongojs 'enqueue-webhook-test', ['devices']
     @datastore = new Datastore
-      database: mongojs 'enqueue-webhook-test'
+      database: database
       collection: 'devices'
 
-    @datastore.remove => done()
+    database.devices.remove done
 
   beforeEach ->
     @redisKey = uuid.v1()
