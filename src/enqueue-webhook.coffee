@@ -45,8 +45,11 @@ class EnqueueWebhooks
     return callback null unless _.contains ['received', 'broadcast'], messageType
 
     lookupUuid = toUuid
+    projection =
+      uuid: true
+      'meshblu.messageHooks': true
 
-    @deviceManager.findOne {uuid:lookupUuid}, (error, device) =>
+    @deviceManager.findOne {uuid:lookupUuid, projection}, (error, device) =>
       return callback error if error?
 
       forwarders = device?.meshblu?.messageHooks
