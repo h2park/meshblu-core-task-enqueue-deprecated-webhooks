@@ -21,6 +21,7 @@ describe 'EnqueueWebhooks', ->
     @jobManager = new JobManager
       client: _.bindAll redis.createClient @redisKey
       timeoutSeconds: 1
+      jobLogSampleRate: 1
 
     @cache = _.bindAll redis.createClient @redisKey
 
