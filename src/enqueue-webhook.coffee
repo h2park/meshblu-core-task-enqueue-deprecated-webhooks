@@ -55,7 +55,7 @@ class EnqueueWebhooks
       forwarders = device?.meshblu?.messageHooks
       return callback null unless forwarders?
 
-      async.each forwarders, (options, next) =>
+      async.eachLimit forwarders, 100, (options, next) =>
         auth = _.cloneDeep auth
         auth.uuid = lookupUuid
         @_createJob {auth, uuid: lookupUuid, toUuid, fromUuid, messageType, message, options}, next
