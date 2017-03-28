@@ -1,3 +1,4 @@
+{describe,beforeEach,expect,it} = global
 _ = require 'lodash'
 uuid = require 'uuid'
 redis = require 'fakeredis'
@@ -37,8 +38,8 @@ describe 'EnqueueWebhooks', ->
     @sut = new EnqueueWebhooks options
 
   describe '->do', ->
-    context 'messageType: received', ->
-      context 'when given a device', ->
+    describe 'messageType: received', ->
+      describe 'when given a device', ->
         beforeEach (done) ->
           record =
             uuid: 'emitter-uuid'
@@ -90,3 +91,58 @@ describe 'EnqueueWebhooks', ->
               url: 'http://requestb.in/18gkt511'
               method: 'POST'
               type: 'webhook'
+
+  describe '->getUniqueMessageHooks', ->
+    describe 'when there are duplicates', ->
+      beforeEach ->
+        device =
+          meshblu:
+            messageHooks: [
+              { method: 'UNIQUE', url: 1 }
+              { method: 'UNIQUE', url: 1 }
+              { method: 'UNIQUE', url: 2 }
+              { method: 'UNIQUE', url: 2 }
+            ]
+        @messageHooks = @sut.getUniqueMessageHooks { device }
+
+      it 'should have unique messageHooks', ->
+        expect(@messageHooks).to.deep.equal [
+          { method: 'UNIQUE', url: 1 }
+          { method: 'UNIQUE', url: 2 }
+        ]
+
+    describe 'when there are no dups', ->
+      beforeEach ->
+        device =
+          meshblu:
+            messageHooks: [
+              { method: 'UNIQUE', url: 1 }
+              { method: 'UNIQUE', url: 2 }
+            ]
+        @messageHooks = @sut.getUniqueMessageHooks { device }
+
+      it 'should have unique messageHooks', ->
+        expect(@messageHooks).to.deep.equal [
+          { method: 'UNIQUE', url: 1 }
+          { method: 'UNIQUE', url: 2 }
+        ]
+
+    describe 'when there are no messageHooks', ->
+      beforeEach ->
+        device =
+          meshblu: {}
+        @messageHooks = @sut.getUniqueMessageHooks { device }
+
+      it 'should have unique messageHooks', ->
+        expect(@messageHooks).to.be.null
+
+    describe 'when the messageHooks are not an array', ->
+      beforeEach ->
+        device =
+          meshblu:
+            messageHooks:
+              'some-type': {'oh': 'no'}
+        @messageHooks = @sut.getUniqueMessageHooks { device }
+
+      it 'should have unique messageHooks', ->
+        expect(@messageHooks).to.be.null

@@ -52,7 +52,7 @@ class EnqueueWebhooks
     @deviceManager.findOne {uuid:lookupUuid, projection}, (error, device) =>
       return callback error if error?
 
-      forwarders = device?.meshblu?.messageHooks
+      forwarders = @getUniqueMessageHooks { device }
       return callback null unless forwarders?
 
       async.eachLimit forwarders, 100, (options, next) =>
@@ -60,5 +60,16 @@ class EnqueueWebhooks
         auth.uuid = lookupUuid
         @_createJob {auth, uuid: lookupUuid, toUuid, fromUuid, messageType, message, options}, next
       , callback
+
+  getUniqueMessageHooks: ({ device }) =>
+    forwarders = _.get device, "meshblu.messageHooks"
+    return null if _.isEmpty forwarders
+    return null unless _.isArray forwarders
+    uniqueForwarders = []
+    _.each forwarders, (forwarder) =>
+      alreadyExists = _.some uniqueForwarders, (existing) =>
+        return _.isEqual forwarder, existing
+      uniqueForwarders.push forwarder unless alreadyExists
+    return uniqueForwarders
 
 module.exports = EnqueueWebhooks
